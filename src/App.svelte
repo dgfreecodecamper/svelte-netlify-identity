@@ -1,12 +1,21 @@
 <script>
   import router from "page";
 
+  import netlifyIdentity from "netlify-identity-widget";
+  import { user } from "./store.js";
+
   import Home from "../routes/Home.svelte";
   import About from "../routes/About.svelte";
   import Secretpage from "../routes/Secretpage.svelte";
 
+  netlifyIdentity.init();
+
+  $: isLoggedIn = !!$user; // converts $user (falsy value) to false (boolean)
+  $: username = $user !== null ? $user.username : " THERE!";
+
   let page;
   let params;
+  // let loggedInUser;
 
   router("/", () => {
     page = Home;
@@ -20,7 +29,19 @@
 
   router.start();
 
-  export let name;
+  const handleUserAction = (action) => {
+    console.log(`handleUserAction called action is:${action}`);
+    if (action === "login") {
+      netlifyIdentity.open(action);
+      netlifyIdentity.on("login", (u) => {
+        user.login(u);
+        netlifyIdentity.close();
+      });
+    } else if (action === "logout") {
+      user.logout();
+      netlifyIdentity.logout();
+    }
+  };
 </script>
 
 <ul>
@@ -28,6 +49,29 @@
   <li><a href="/about"> About</a></li>
   <li><a href="/secretpage"> Secretpage</a></li>
 </ul>
+
+{#if isLoggedIn}
+  <p>Hello {username}</p>
+{:else}
+  <p>Hello not logged in</p>
+{/if}
+
+<button
+  on:click={() => {
+    handleUserAction("signup");
+  }}>Signup</button
+>
+<button
+  on:click={() => {
+    handleUserAction("login");
+  }}>Login</button
+>
+<button
+  on:click={() => {
+    handleUserAction("logout");
+  }}>Logout</button
+>
+
 <svelte:component this={page} {params} />
 
 <!-- <main>
