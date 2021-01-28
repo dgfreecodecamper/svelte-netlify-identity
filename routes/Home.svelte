@@ -8,7 +8,7 @@
     // Get the current user:
     // Available after on('init') is invoked
     const user = netlifyIdentity.currentUser();
-    console.log(`the user is: ${user}`);
+    console.log(user);
 
     // Bind to events
     netlifyIdentity.on("init", (user) => console.log("init", user));
