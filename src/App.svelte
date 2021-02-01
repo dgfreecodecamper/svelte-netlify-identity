@@ -1,22 +1,20 @@
 <script>
+  import { onMount } from "svelte";
   import router from "page";
 
-  import netlifyIdentity from "netlify-identity-widget";
-  import { user } from "./store.js";
-
+  //import the routes
   import Home from "../routes/Home.svelte";
   import About from "../routes/About.svelte";
   import Secretpage from "../routes/Secretpage.svelte";
 
+  //auth import
+  import { loggedInUser } from "../stores/userStore.js";
+  import netlifyIdentity from "netlify-identity-widget";
   netlifyIdentity.init();
 
-  $: isLoggedIn = !!$user; // converts $user (falsy value) to false (boolean)
-  $: username = $user !== null ? $user.username : " THERE!";
-
   let page;
-  let params;
-  // let loggedInUser;
 
+  //setup the routes
   router("/", () => {
     page = Home;
   });
@@ -26,79 +24,52 @@
   router("/secretpage", () => {
     page = Secretpage;
   });
-
   router.start();
 
+  onMount(() => {
+    //check for current user and place in store
+    $loggedInUser = netlifyIdentity.currentUser();
+  });
+
   const handleUserAction = (action) => {
-    console.log(`handleUserAction called action is:${action}`);
+    // console.log(`handleUserAction called action is:${action}`);
     if (action === "login") {
       netlifyIdentity.open(action);
       netlifyIdentity.on("login", (u) => {
-        user.login(u);
+        $loggedInUser = u;
         netlifyIdentity.close();
       });
     } else if (action === "logout") {
-      user.logout();
       netlifyIdentity.logout();
     }
   };
 </script>
 
-<ul>
+<nav>
   <li><a href="/"> Home</a></li>
   <li><a href="/about"> About</a></li>
   <li><a href="/secretpage"> Secretpage</a></li>
-</ul>
+</nav>
 
-{#if isLoggedIn}
-  <p>Hello {username}</p>
+{#if $loggedInUser && $loggedInUser.email}
+  <p>current user is: {$loggedInUser.email}</p>
 {:else}
-  <p>Hello not logged in</p>
+  <p>Not logged in</p>
 {/if}
 
-<button
-  on:click={() => {
-    handleUserAction("signup");
-  }}>Signup</button
->
-<button
-  on:click={() => {
-    handleUserAction("login");
-  }}>Login</button
->
-<button
-  on:click={() => {
-    handleUserAction("logout");
-  }}>Logout</button
->
+{#if $loggedInUser && $loggedInUser.email}
+  <button
+    on:click={() => {
+      handleUserAction("logout");
+    }}>Logout</button
+  >
+{:else}
+  <button
+    on:click={() => {
+      handleUserAction("login");
+    }}>Login</button
+  >
+{/if}
 
-<svelte:component this={page} {params} />
-
-<!-- <main>
-  <h1>Hello {name}!</h1>
-  <p>
-    Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
-    how to build Svelte apps.
-  </p>
-</main> -->
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
-</style>
+<!-- <svelte:component this={page} {params} /> -->
+<svelte:component this={page} />
