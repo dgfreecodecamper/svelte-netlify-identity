@@ -41,6 +41,7 @@
       });
     } else if (action === "logout") {
       netlifyIdentity.logout();
+      $loggedInUser = null;
     }
   };
 </script>
