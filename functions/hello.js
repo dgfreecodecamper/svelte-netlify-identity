@@ -4,6 +4,8 @@ exports.handler = async function (event, context) {
     age: 24,
     male: true,
   };
+
+  const { identity, user } = context.clientContext;
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -11,6 +13,8 @@ exports.handler = async function (event, context) {
       data: data,
       event: event,
       context: context,
+      identity: identity,
+      user: user,
     }),
   };
 };
