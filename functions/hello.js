@@ -9,6 +9,8 @@ exports.handler = async function (event, context) {
     body: JSON.stringify({
       message: "Hello World from the backend serverless function",
       data: data,
+      event: event,
+      context: context,
     }),
   };
 };
