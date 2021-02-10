@@ -17,6 +17,7 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "mongodb": "^3.6.4",
     "netlify-identity-widget": "^1.9.1",
     "node-fetch": "^2.6.1",
     "page": "^1.11.6",

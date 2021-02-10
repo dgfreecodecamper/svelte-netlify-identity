@@ -1,7 +1,7 @@
 <script>
   import { loggedInUser } from "../stores/userStore.js";
 
-  let posts = [];
+  let notes = [];
   let msg = "";
 
   const handleClick = async () => {
@@ -10,7 +10,7 @@
     // console.log($loggedInUser);
     if ($loggedInUser !== null) {
       console.log($loggedInUser);
-      const res = await fetch("/.netlify/functions/getPosts", {
+      const res = await fetch("/.netlify/functions/getNotes", {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -20,7 +20,7 @@
       });
       const data = await res.json();
       console.log(data);
-      posts = data.data;
+      notes = data.data;
       msg = data.message;
     } else {
       console.log(`no token found!`);
@@ -29,17 +29,17 @@
 </script>
 
 {#if $loggedInUser && $loggedInUser.email}
-  <h1>The secret page with secrets exposed</h1>
-  <button on:click={handleClick}>Fetch posts</button>
+  <h1>This page will fetch notes from MongoDB</h1>
+  <button on:click={handleClick}>Fetch notes</button>
 {:else}
   <h1>Unauthorised to view this</h1>
 {/if}
 
 <h3>{msg}</h3>
-{#if posts.length > 0}
-  {#each posts as post}
-    <p>{post.id} - {post.title}</p>
-    <p>{post.body}</p>
+{#if notes.length > 0}
+  {#each notes as note}
+    <p>{note.id} - {note.title}</p>
+    <p>{note.desc}</p>
   {/each}
 {:else}
   <p>Sorry no results</p>

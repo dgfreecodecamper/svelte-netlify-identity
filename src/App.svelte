@@ -6,6 +6,7 @@
   import Home from "../routes/Home.svelte";
   import About from "../routes/About.svelte";
   import Secretpage from "../routes/Secretpage.svelte";
+  import Mongo from "../routes/Mongo.svelte";
 
   //auth import
   import { loggedInUser } from "../stores/userStore.js";
@@ -23,6 +24,9 @@
   });
   router("/secretpage", () => {
     page = Secretpage;
+  });
+  router("/mongo", () => {
+    page = Mongo;
   });
   router.start();
 
@@ -50,6 +54,7 @@
   <li><a href="/"> Home</a></li>
   <li><a href="/about"> About</a></li>
   <li><a href="/secretpage"> Secretpage</a></li>
+  <li><a href="/mongo"> Mongo</a></li>
 </nav>
 
 {#if $loggedInUser && $loggedInUser.email}

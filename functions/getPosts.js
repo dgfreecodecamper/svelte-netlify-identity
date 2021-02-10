@@ -12,6 +12,9 @@ exports.handler = async function (event, context) {
   //check for an auth user
   // const { identity, user } = context.clientContext;
 
+  //useful link
+  //https://dev.to/moshe/implementing-access-control-with-netlify-identity-and-netlify-functions-3jpj
+
   const user = context.clientContext.user;
   const roles = context.clientContext.user.app_metadata.roles || "";
   console.log(user.email);
