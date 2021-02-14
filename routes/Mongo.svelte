@@ -9,7 +9,7 @@
 
     // console.log($loggedInUser);
     if ($loggedInUser !== null) {
-      console.log($loggedInUser);
+      // console.log($loggedInUser);
       const res = await fetch("/.netlify/functions/getNotes", {
         method: "GET",
         headers: {
@@ -20,7 +20,7 @@
       });
       const data = await res.json();
       console.log(data);
-      notes = data.data;
+      notes = data;
       msg = data.message;
     } else {
       console.log(`no token found!`);
@@ -38,8 +38,9 @@
 <h3>{msg}</h3>
 {#if notes.length > 0}
   {#each notes as note}
-    <p>{note.id} - {note.title}</p>
-    <p>{note.desc}</p>
+    <!-- <h2><span class="greyout">{note._id}</span> - {note.title}</h2> -->
+    <h2>{note.title}</h2>
+    <p>{note.plot}</p>
   {/each}
 {:else}
   <p>Sorry no results</p>
@@ -55,3 +56,8 @@ https://dev.to/moshe/implementing-access-control-with-netlify-identity-and-netli
 
 
 -->
+<style>
+  .greyout {
+    color: grey;
+  }
+</style>
